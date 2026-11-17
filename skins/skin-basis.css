@@ -1,0 +1,79 @@
+/* SKIN-BASIS (skins 20 — mekanisme-skins.md §2–5; docs/skins.md). Fælles for skins og sæsonlag; hentes af motoren med det første lag (ikke i bundlen). Gælder kun under html[data-skin-lag]. */
+/* Skallen bliver gennemsigtig, så baggrundslaget ses; rammen uden om skallen (tablet/desktop) er verdenen selv (--ramme = skinnets mørke baggrund, fra registret). */
+html[data-skin-lag] body { background: var(--ramme, #211d18); }
+html[data-skin-lag]:not([data-skin]) body { background: var(--skin-sidebg, var(--ramme, #211d18)); }   /* sæsonlag/fest uden skin: temaets egen --bg (motoren spejler den som --skin-sidebg) */
+html[data-skin-lag] #dc-root [data-wt] { background: transparent !important; }   /* kun skærmroden — punkt 4 (kandidat 162): waba-doer.js' overlays på body (privatlivskortet, bekræft-kortet, fuld skærm …) har deres egen data-wt og beholder deres faste flade */
+html[data-skin-lag] [data-skal], html[data-skin-lag] [data-app-rod] { background: transparent !important; }   /* ejerens skal hedder data-skal, administrationens og personalets data-app-rod */
+html[data-skin-lag] #dc-root { position: relative; z-index: 1; }
+/* Lagene: bag appen (z 0), forgrunden (167: z 0 — bag appen), maskotten (z 51, over fanebjælken). F-4 (kandidat 161): heller ikke maskotten tager et tryk — den står over
+   tryk-mål (julenissen over personalets «Udført»); motoren lader et tryk på en TOM flade under den tælle som et tryk på den (nik og tricket 28c). */
+#skin-bag, #skin-for { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+#skin-bag { z-index: 0; }
+/* 167 (g-04, g-13, g-14): forgrunden ses i verdenen, aldrig oven på en knap eller tekst. Kun «sendt»-konfettien står foran (#skin-jubel). */
+#skin-for { z-index: 0; clip-path: inset(0 0 0 var(--skin-venstre, 0px)); }   /* 159: intet oven i sidemenuen */
+#skin-jubel { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; clip-path: inset(0 0 0 var(--skin-venstre, 0px)); }
+#skin-maskot { position: fixed; z-index: 51; pointer-events: none; height: 0; }
+#skin-maskot > svg { position: absolute; right: 36px; bottom: -5px; pointer-events: none; }   /* 167 · g-15: højst ≈ 5 px ned i bjælken (tal-mærkerne ≈ 9 px nede) */
+/* GANGEN (punkt 5, kandidat 162 — «hesten går på stedet»): maskotten går langs fanebjælken (oven på den; på computeren langs sidemenuens bund), holder små pauser og vender
+   ved enderne. ÉN mekanik for alle: skin-gaa (translate + scale — de enkelte egenskaber, så skinnets egne transform-animationer består) og skin-trin (rotate: vug på kroppen,
+   sving på benene .ben — kun mens den går; i pauserne står den stille). Periode 32 s: pause · gå til midten · pause · gå til venstre ende · vend · pause · gå tilbage (med en pause)
+   · vend. --d = strækningen (beholderens bredde − figuren − 40 px, aldrig positiv), --vl/--vr = skalaen, når den går mod venstre/højre (tegnet mod højre: −1/1 — standard; mod
+   venstre: 1/−1; forfra: 1/1). En figur med data-fast går ikke (står på sin egen plads — punkt 10). Bevægelse fra: står stille på --hvile af strækningen. Benenes regel er
+   :where() (specificitet 0) med !important — den vinder over skinnets egne ben-animationer, men taber til pausen og Rolig nedenfor. */
+#skin-maskot > svg:not([data-fast]) { right: 20px; transform-origin: 50% 100%; --d: min(0px, calc(100% + 40px - var(--w, 390px))); --vl: -1; --vr: 1; --r1: 2.5deg; --r2: -2.5deg;
+  animation: skin-gaa 32s linear infinite, skin-trin 32s linear infinite; }
+:where(#skin-maskot > svg:not([data-fast])) .ben { animation: skin-trin 32s linear infinite !important; --r1: 14deg; --r2: -14deg; }
+:where(#skin-maskot > svg:not([data-fast])) :is(.ben.b, .ben.b2, .ben.b4, .ben.d2) { --r1: -14deg; --r2: 14deg; }
+html[data-bevaegelse="fra"] #skin-maskot > svg:not([data-fast]) { translate: calc(var(--d) * var(--hvile, .2)) 0; }
+@keyframes skin-gaa{0%,5%{translate:0 0;scale:var(--vl) 1}22%,27%{translate:calc(var(--d)*.5) 0}45%,47.5%{translate:var(--d) 0;scale:var(--vl) 1}47.6%,50%{translate:var(--d) 0;scale:var(--vr) 1}67%,72%{translate:calc(var(--d)*.45) 0}95%,97.5%{translate:0 0;scale:var(--vr) 1}97.6%,100%{translate:0 0;scale:var(--vl) 1}}
+@keyframes skin-trin{0%,5%,22%,27%,45%,50%,67%,72%,95%,100%{rotate:0deg}5.55%,7.75%,9.95%,12.15%,14.35%,16.55%,18.75%,20.95%,27.55%,29.75%,31.95%,34.15%,36.35%,38.55%,40.75%,42.95%,50.55%,52.75%,54.95%,57.15%,59.35%,61.55%,63.75%,65.95%,72.55%,74.75%,76.95%,79.15%,81.35%,83.55%,85.75%,87.95%,90.15%,92.35%{rotate:var(--r1)}6.65%,8.85%,11.05%,13.25%,15.45%,17.65%,19.85%,28.65%,30.85%,33.05%,35.25%,37.45%,39.65%,41.85%,44.05%,51.65%,53.85%,56.05%,58.25%,60.45%,62.65%,64.85%,73.65%,75.85%,78.05%,80.25%,82.45%,84.65%,86.85%,89.05%,91.25%,93.45%{rotate:var(--r2)}}
+/* Kandidat 164 · S-1: maskotten hviler efter 30 s uden berøring (motoren sætter html[data-maskot-hvil]) — gangen, benene og skinnets egne figur-animationer står stille, hvor de er. */
+html[data-maskot-hvil] #skin-maskot > svg, html[data-maskot-hvil] #skin-maskot > svg * { animation-play-state: paused !important; }
+/* Et åbent ark ([data-dialog]) skjuler maskotten (motoren sætter data-skin-ark efter hver render). */
+html[data-skin-ark] #skin-maskot { display: none !important; }
+/* Partiklernes grundform: transform/opacity; plads, forsinkelse, varighed og skala pr. partikel er motorens variabler (--x, --dl, --dur, --sc). */
+#skin-bag .p, #skin-for .p { position: absolute; left: var(--x, 50%); top: -8%; display: block; will-change: transform; animation-delay: var(--dl, 0s); animation-duration: var(--dur, 12s); animation-iteration-count: infinite; animation-timing-function: linear; }
+/* Pause: fanen skjult → alt i lagene og al pynt står stille (intet arbejde i baggrunden). */
+html[data-skin-pause] #skin-bag, html[data-skin-pause] #skin-for, html[data-skin-pause] #skin-maskot, html[data-skin-pause] #skin-bag *, html[data-skin-pause] #skin-for *, html[data-skin-pause] #skin-maskot *,
+html[data-skin-pause] #skin-bag::before, html[data-skin-pause] #skin-bag::after, html[data-skin-pause] #skin-for::before, html[data-skin-pause] #skin-for::after,
+html[data-skin-pause] [data-wt] *::before, html[data-skin-pause] [data-wt] *::after { animation-play-state: paused !important; }
+/* Rolig: Bevægelse fra (kontakten, prefers-reduced-motion, personalets standard). Partikler og hændelser væk; lag, maskot og pynt står stille — verdenen består. */
+html[data-bevaegelse="fra"] #skin-bag .p, html[data-bevaegelse="fra"] #skin-for .p, html[data-bevaegelse="fra"] #skin-for [data-haendelse], html[data-bevaegelse="fra"] #skin-bag [data-haendelse] { display: none !important; }
+html[data-bevaegelse="fra"] #skin-bag, html[data-bevaegelse="fra"] #skin-for, html[data-bevaegelse="fra"] #skin-bag *, html[data-bevaegelse="fra"] #skin-for *, html[data-bevaegelse="fra"] #skin-maskot *,
+html[data-bevaegelse="fra"] #skin-bag::before, html[data-bevaegelse="fra"] #skin-bag::after, html[data-bevaegelse="fra"] #skin-for::before, html[data-bevaegelse="fra"] #skin-for::after,
+html[data-bevaegelse="fra"] [data-wt] *::before, html[data-bevaegelse="fra"] [data-wt] *::after { animation: none !important; transition: none !important; }
+html[data-bevaegelse="fra"] [data-wt] * { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+/* Flader med pynt (position for pseudo-elementer); hilsenens pynt står til højre — plads til den, hvor hilsenen ikke er fuld bredde. */
+html[data-skin] [data-hilsen], html[data-skin] [data-hjem-felt] { position: relative; }
+@media screen and (max-width: 1023px) { html[data-skin] [data-bundmenu] { position: relative; } }   /* 159: ≥ 1024 px er personalets fanebjælke sidemenuen (fixed) */
+/* Forsidens felt klipper sine børn (overflow:hidden for de runde hjørner) — skinnets pynt i ::after må rage op over kanten (runde 2 U1; rækkerne har gennemsigtig baggrund, kun en trykket rækkes hjørne-klip mistes). */
+html[data-skin] [data-hjem-felt] { overflow: visible !important; }
+/* 167 · g-22: felt-udhænget står på feltets kant — højst 8 px ned i første række, højst 20 px højt (contain), aldrig over «›». */
+html[data-skin] [data-hjem-felt]::after { top: auto !important; bottom: calc(100% - 8px) !important; max-height: 20px !important; background-size: contain !important; background-position: center bottom !important; background-repeat: no-repeat !important; }
+/* Listekortet (64 px foto, 80 px række) får ingen hjørnepynt (runde 2 U3). */
+html[data-skin] [data-hest-kort="liste"]::before, html[data-skin] [data-hest-kort="liste"]::after { display: none !important; }
+html[data-skin] [data-hilsen] { padding-right: 84px !important; box-sizing: border-box; }
+/* 167 · DEN SIKRE ZONE (g-02, g-03, g-09, g-10; dovendyret ved ~700 px): på en fanebjælke (data-skin-fb — skin eller sæsonlag) har figuren sit eget bånd over
+   bjælken, og skærmen slutter over det: intet, man trykker på eller læser, ruller ind under figuren, og listen er skarp helt ned. Båndet = max(--skin-scene (skinnets:
+   spring, flamingo), --skin-baand (motorens: figurens kasse + 4 px)). Afløser 162's punkt 7 og 10 (væk under rul, luft + udtoning). Sidemenuen har plads som før. */
+html[data-skin-fb] { --skin-scene: 52px; }
+html[data-skin-fb] [data-bundmenu] { margin-top: max(var(--skin-scene), var(--skin-baand, 0px)) !important; }
+/* 167: punkt 7 (væk under rul) er væk — maskotten bliver. Den skjules kun af et ark (data-skin-ark: arkets knapper) og står stille, når fanen er skjult,
+   med Bevægelse fra og i hvilen (S-1, strøm: 30 s uden berøring). */
+/* 28b · jubel: konfetti foran ved «bestilling sendt» (motoren laver 12 stykker, 2,5 s, én gang). 28c · tricket: fem tryk på maskotten → hop + vrid (et skin kan give sit eget på [data-glad]). */
+#skin-jubel .skin-jubel { position: absolute; left: var(--x, 50%); top: 30%; width: 8px; height: 12px; border-radius: 2px; background: var(--c, #e6b45c); animation: skin-jubel 2.5s ease-out 1 forwards; animation-delay: var(--dl, 0s); will-change: transform; }
+@keyframes skin-jubel { 0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(.6); opacity: 0; } 8% { opacity: 1; transform: translate3d(calc(var(--dx, 0px) * .4), -70px, 0) rotate(120deg) scale(1); } 100% { transform: translate3d(var(--dx, 0px), 60vh, 0) rotate(720deg); opacity: 0; } }
+#skin-maskot[data-glad] > svg { animation: skin-glad 1.6s ease-in-out 1 !important; transform-origin: 50% 100%; }
+#skin-maskot[data-glad] > svg:not([data-fast]) { animation: skin-gaa 32s linear infinite, skin-trin 32s linear infinite, skin-glad 1.6s ease-in-out 1 !important; }   /* punkt 5: tricket lægges OVEN I gangen (samme navne i samme rækkefølge — gangen fortsætter, intet hop tilbage) */
+@keyframes skin-glad { 0%, 100% { transform: translateY(0) rotate(0deg); } 20% { transform: translateY(-18px) rotate(-12deg); } 40% { transform: translateY(0) rotate(0deg); } 60% { transform: translateY(-14px) rotate(12deg); } 80% { transform: translateY(0) scale(1.08, .92); } }
+/* GLASPLADEN (punkt 1, kandidat 162 — afløser F-3's pude pr. linje): motoren lægger ÉT felt pr. skærmkolonne bag tekst, der står direkte på verdenen, i laget #skin-glas
+   (fast, over #skin-bag, under appen — aldrig trykbart). Farven er verdenens --bg med skinnets dækning (--skin-glas-a på [data-wt], standard .88 — 167), sat af motoren som --skin-glas. */
+#skin-glas { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+#skin-glas > i { position: absolute; display: block; border-radius: 16px; background: var(--skin-glas, rgba(255, 255, 255, .88)); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+
+/* Kandidat 166 · G1 (Grok Bot g-01): pynt-::before på et versal-element, der selv er grid/flex, blev et ekstra barn (lagertabellens overskrifter rykkede).
+   Værnet slukker den for alle skins og lag; runtime skriver stilen med mellemrum. */
+[data-wt] :is([style*="display:grid"],[style*="display: grid"],[style*="display:flex"],[style*="display: flex"],[style*="display:inline-flex"],[style*="display: inline-flex"],[style*="display:inline-grid"],[style*="display: inline-grid"]):is([style*="text-transform:uppercase"],[style*="text-transform: uppercase"])::before { content: none !important; }
+
+/* Kandidat 167 · læsbarhed (g-06) — indhold (foto, avatar, video) filtreres og blandes aldrig */
+html[data-skin-lag] [data-wt] :is(img, image-slot, video) { filter: none !important; mix-blend-mode: normal !important; }

@@ -1,0 +1,17 @@
+/* FEST-LAG · FØDSELSDAG (skins 27, docs/skins.md §5; design skins.md §Sæsonernes bevægelse; temaer 02 = vimpler og kage) — oven I det, der er (skin, sæson, farvetema), på den skærm, der viser en
+   fødselsdagshest ([data-fest="1"] → html[data-skin-fest]): fem balloner i tre farver stiger langsomt bag kortene og vipper (registret), konfetti foran i 6 s, når forsiden åbnes (én gang — saeson.js),
+   vimplerne bølger, fødselsdagshesten får en partyhat på kortet (::after — skinnets hjørnepynt viger for fest-kort). Ingen maskot (hesten selv), ingen tokens, ingen body. Keyframes ss-foedselsdag-*. */
+html[data-skin-fest][data-skin-lag] #skin-bag .ss-ballon { top: auto; bottom: -14%; width: 26px; height: 34px; border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%; opacity: .9; animation-name: ss-foedselsdag-stig; animation-timing-function: ease-in-out; }
+html[data-skin-fest][data-skin-lag] #skin-bag .ss-ballon::after { content: ""; position: absolute; left: 12px; top: 33px; width: 1px; height: 22px; background: rgba(90, 80, 70, .45); }
+html[data-skin-fest][data-skin-lag] #skin-bag .ss-ballon.v0 { background: radial-gradient(circle at 35% 30%, #ff9ea8, #c8102e 70%); }
+html[data-skin-fest][data-skin-lag] #skin-bag .ss-ballon.v1 { background: radial-gradient(circle at 35% 30%, #fff1a8, #e6b45c 70%); }
+html[data-skin-fest][data-skin-lag] #skin-bag .ss-ballon.v2 { background: radial-gradient(circle at 35% 30%, #b9d6ff, #2f6fb3 70%); }
+@keyframes ss-foedselsdag-stig { 0% { transform: translate3d(0, 0, 0) rotate(-4deg) scale(var(--sc, 1)); } 50% { transform: translate3d(14px, -60vh, 0) rotate(5deg) scale(var(--sc, 1)); } 100% { transform: translate3d(-8px, -125vh, 0) rotate(-3deg) scale(var(--sc, 1)); } }
+/* Konfetti foran, ÉN gang (animation-iteration-count 1, 6 s) — en hændelse ved åbningen, ikke ambient. */
+html[data-skin-fest][data-skin-lag] #skin-for .ss-fest { position: absolute; left: var(--x, 50%); top: -4%; width: 8px; height: 12px; border-radius: 2px; background: var(--c, #c8102e); animation: ss-foedselsdag-konfetti 6s ease-in 1 forwards; animation-delay: var(--dl, 0s); will-change: transform; }
+@keyframes ss-foedselsdag-konfetti { 0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; } 80% { opacity: 1; } 100% { transform: translate3d(var(--dx, 0px), 110vh, 0) rotate(720deg); opacity: 0; } }
+/* Vimplerne (temaer 02) bølger let; partyhat på fødselsdagshestens kort. */
+html[data-skin-fest][data-skin-lag] [data-fest="1"]::before { animation: ss-foedselsdag-boelge 3s ease-in-out infinite; }
+html[data-skin-fest][data-skin-lag] [data-fest-hoved="1"]::before { animation: ss-foedselsdag-boelge 3s ease-in-out infinite; }
+@keyframes ss-foedselsdag-boelge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+html[data-skin-fest][data-skin-lag] [data-fest="1"]::after { content: ""; position: absolute; left: 2px; top: 24px; width: 24px; height: 24px; z-index: 2; pointer-events: none; transform: rotate(-16deg); filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath d='M6 27L15 3l9 24z' fill='%23e6b45c'/%3E%3Cpath d='M9 19l12-6M8 23l14-6' stroke='%23c8102e' stroke-width='2'/%3E%3Ccircle cx='15' cy='3' r='3' fill='%23fff'/%3E%3C/svg%3E") center/contain no-repeat; }
